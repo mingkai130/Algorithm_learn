@@ -27,5 +27,21 @@ public class tools {
         public int compare(Integer o1, Integer o2) {
             return o1 - o2;
         }
+
     };
+
+    // 交换某个 int 数组两个元素
+    public static void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+    // 将某个 int 数组的部分逆置
+    public static void reverse(int[] nums, int left, int right) {
+        while (left < right) {
+            swap(nums, left, right);
+            left++;
+            right--;
+        }
+    }
 }

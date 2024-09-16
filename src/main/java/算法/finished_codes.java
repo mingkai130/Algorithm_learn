@@ -797,7 +797,7 @@ public class finished_codes {
     }
 
     // 有效的括号 -- 经典用栈匹配
-    public static boolean isValid(String s) {
+    public static boolean isValidkuohao(String s) {
 
         Stack<Character> st = new Stack<>();
         // 特殊情况
@@ -858,7 +858,7 @@ public class finished_codes {
     public static void answer(List<String> ans,String current, int n, int layer){
         // 走到了最后一层，需要判断当前序列是否合法，若合法则加入ans集合
         if (layer == n){
-            if (finished_codes.isValid(current))
+            if (finished_codes.isValidkuohao(current))
                 ans.add(current);
         }
         // 若是中间某层
