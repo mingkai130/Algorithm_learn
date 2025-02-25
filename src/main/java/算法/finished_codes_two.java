@@ -1,7 +1,6 @@
 package 算法;
 
 import 算法.数据结构.ListNode;
-import 算法.数据结构.tools.*;
 
 import java.util.*;
 
@@ -391,4 +390,392 @@ public class finished_codes_two {
         return true;
     }
 
+    // 38.外观数列 -- 经过思考一次过！！正向模拟递归
+    public static String countAndSay(int n) {
+        if (n == 1) return "1";
+        else {
+            String ans = new String("1");
+            for (int i = 1; i < n; i++) {
+                ans = encode(ans);
+            }
+            return ans;
+        }
+    }
+    public static String encode(String str){
+        StringBuffer ans = new StringBuffer();
+        for (int i = 0; i < str.length(); i++) {
+            // 处理单个字符
+            if (i == str.length() - 1 || str.charAt(i) != str.charAt(i + 1) && i + 1 < str.length()){
+                ans.append('1');
+                ans.append(str.charAt(i));
+            }
+            // 多个字符s
+            else {
+                int count = 1;
+                while (i + 1 < str.length() && str.charAt(i) == str.charAt(i + 1) ){
+                    count += 1;
+                    i += 1;
+                }
+                ans.append(count);
+                ans.append(str.charAt(i));
+            }
+        }
+        return ans.toString();
+    }
+
+    // 39.组合总和 -- 想暴力回溯到叶节点，但是这个题目是每个数字都可以用无数次，要用dfs，这是答案dfs，不含剪枝操作  --- 重要模板
+    public static List<List<Integer>> combinationSum(int[] candidates, int target) {
+
+        List<List<Integer>> ans = new ArrayList<List<Integer>>();
+        List<Integer> combine = new ArrayList<Integer>();
+        int sum=0;
+        dfs_back(candidates, target, ans, 0, combine, sum);
+        return ans;
+    }
+    public static void dfs_back(int[] candidates, int target, List<List<Integer>> ans, int index, List<Integer> combine, int sum) {
+        // index递归到最后一个candidate之后的那个，说明这条路走不通了
+        if (index == candidates.length) return;
+        // 找到一种组合
+        if (target == 0) {
+            ans.add(new ArrayList<>(combine));
+            return;
+        }
+        // 不选择当前值，直接跳过,index++, combine不变
+        dfs_back(candidates, target, ans, index + 1, combine, sum);
+        // 选择当前值，dfs继续，先把当前值加进来，dfs之后把它移出去，注意index不能变！
+        if (target - candidates[index] >= 0) {
+            combine.add(candidates[index]);
+            dfs_back(candidates, target - candidates[index], ans, index, combine, sum);
+            combine.removeLast();
+        }
+    }
+
+    // 39.组合总和 -- 想暴力回溯到叶节点,自己试一下  --- 重要模板
+    public static List<List<Integer>> combinationSum2(int[] candidates, int target) {
+
+        List<List<Integer>> ans = new ArrayList<List<Integer>>();
+        List<Integer> combine = new ArrayList<Integer>();
+        dfs_back(candidates, target, ans, 0, combine, 0);
+        return ans;
+    }
+    public static void dfs_back2(int[] candidates, int target, List<List<Integer>> ans, int index, List<Integer> combine, int sum) {
+        // 此路不通
+        if (index == candidates.length) return;
+        // 找到答案
+        if (sum == target) {
+            ans.add(new ArrayList<>(combine));
+            return;
+        }
+        // 中间情况
+        if (sum > target) return;
+        // 不选择当前值
+        dfs_back(candidates, target, ans, index + 1, combine, sum);
+        // 选择当前值
+        combine.add(candidates[index]);
+        dfs_back(candidates, target, ans, index, combine, sum + candidates[index]);
+        combine.removeLast();
+    }
+
+    // 40. 组合总和 II  一眼回溯  -- 不熟练……
+    public static List<List<Integer>> combinationSum3(int[] candidates, int target) {
+        Arrays.sort(candidates);
+        List<List<Integer>> ans = new ArrayList<>();
+        List<Integer> combine = new ArrayList<>();
+        dfs_back_combine2(ans ,candidates, target, combine, 0, 0);
+        return ans;
+    }
+    public static void dfs_back_combine2(List<List<Integer>> ans,int[] candidates, int target, List<Integer> combine, int index, int sum){
+
+        // 找到答案
+        if (sum == target) {
+            ans.add(new ArrayList<>(combine));
+            return;
+        }
+        // 中间情况
+        if (sum > target) return;
+        for (int i = index; i < candidates.length; i++) {
+            // 跳过重复的元素
+            if (i > index && candidates[i] == candidates[i - 1]) {
+                continue;
+            }
+            // 做选择
+            combine.add(candidates[i]);
+            // 递归：因为每个数字只能使用一次，所以 index 要传 i+1
+            dfs_back_combine2(ans, candidates, target, combine, i + 1, sum + candidates[i]);
+            // 撤销选择
+            combine.remove(combine.size() - 1);
+        }
+    }
+
+    // 41. 缺失的第一个正数 -- 哈希表解法很普通，答案用当前nums代替哈希表，很巧妙
+    public static int firstMissingPositive(int[] nums) {
+        Arrays.sort(nums);
+        HashSet<Integer> hs = new HashSet<>();
+        for (int i = 0; i < nums.length; i++) {
+            hs.add(nums[i]);
+        }
+        int i = 1;
+        for (; i < Integer.MAX_VALUE; i++) {
+            if (!hs.contains(i)) break;
+        }
+        return i;
+    }
+
+    // 43. 字符串相乘 -- 算法模拟大数乘法运算
+    public static String multiply(String num1, String num2) {
+
+        // 特殊情况处理
+        if (num1.equals("0") || num2.equals("0")) return "0";
+        if (num1.equals("1") || num2.equals("1")) return num1.equals("1")? num2:num1;
+        // 主程序 -- 模拟乘法
+        String ans= "";
+        for (int i = num2.length() - 1; i >= 0 ; i--) {
+            StringBuilder temp = new StringBuilder();
+            int forward = 0;
+            for (int j = num1.length() - 1; j >= 0; j--) {
+                int multiply = (num1.charAt(j) - 48) * (num2.charAt(i) - 48) + forward;
+                forward = multiply / 10;
+                temp.insert(0, multiply % 10);
+            }
+            if (forward != 0) temp.insert(0,  forward);
+            if (i < num2.length() - 1) for (int j = 0; j < num2.length() - 1 - i; j++) {
+                temp.append("0");
+            }
+            ans = StringPlus(ans, temp.toString());
+        }
+        return ans;
+    }
+    // 算法模拟大数加法运算
+    public static String StringPlus(String num1, String num2) {
+        int i = num1.length() - 1, j = num2.length() - 1, add = 0;
+        StringBuffer ans = new StringBuffer();
+        while (i >= 0 || j >= 0 || add != 0) {
+            int x = i >= 0 ? num1.charAt(i) - '0' : 0;
+            int y = j >= 0 ? num2.charAt(j) - '0' : 0;
+            int result = x + y + add;
+            ans.append(result % 10);
+            add = result / 10;
+            i--;
+            j--;
+        }
+        ans.reverse();
+        return ans.toString();
+    }
+
+    // 44.通配符匹配  -- 看了一眼就想动态规划，但是具体细节还没有很清楚，需要看答案
+    public static boolean isMatch(String s, String p) {
+
+        int m = s.length();
+        int n = p.length();
+
+        // dp[i][j] 表示字符串 s 的前 i 个字符和模式 p 的前 j 个字符是否能匹配
+        boolean[][] dp = new boolean[m + 1][n + 1];
+
+        // dp 数组边界处理
+        dp[0][0] = true;
+        for (int i = 1; i <= n; i++) {
+            if (p.charAt(i - 1) == '*') {
+                dp[0][i] = true;
+            } else {
+                break;
+            }
+        }
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (p.charAt(j - 1) == '?')
+                    dp[i][j] = dp[i - 1][j - 1];
+                else if (p.charAt(j - 1) == s.charAt(i - 1))
+                    dp[i][j] = dp[i - 1][j - 1];
+                else if (p.charAt(j - 1) == '*')
+                    dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+            }
+        }
+
+        return dp[m][n];
+    }
+
+    // 45. 跳跃游戏 II  答案从后往前找，挺厉害,虽然直观，但是时间复杂度比较高
+    public static int jump(int[] nums) {
+        int position = nums.length - 1;
+        int ans = 0;
+        while (position > 0){
+            for (int i = 0; i < position; i++) {
+                // 这个判断是核心，一定是 >=
+                if (i + nums[i] >= position) {
+                    ans ++;
+                    position = i;
+                    break;
+                }
+            }
+        }
+        return ans;
+    }
+
+    // 46.全排列   一眼回溯,就是不太熟练要多练！
+    public static List<List<Integer>> permute(int[] nums) {
+        ArrayList<List<Integer>> ans = new ArrayList<>();
+        ArrayList<Integer> temp = new ArrayList<>();
+        backTrace(nums, ans, temp, 0);
+        return ans;
+    }
+    public static void backTrace(int[] nums,ArrayList<List<Integer>> ans, ArrayList<Integer> temp, int level){
+        // 到达最底层，加入答案集
+        if (level == nums.length) ans.add(new ArrayList<>(temp));
+        else{
+            // for循环保证下一个位置可以放各种值！
+            for (int i = 0; i < nums.length; i++) {
+                // 直接用内置函数，不要用HashSet
+                if (!temp.contains(nums[i])) {
+                    temp.add(nums[i]);
+                    backTrace(nums, ans, temp, level+1);
+                    temp.removeLast();
+                }
+            }
+        }
+    }
+
+    // 47.全排列 II  一眼回溯，要处理重复值
+    public static List<List<Integer>> permute2(int[] nums) {
+        ArrayList<List<Integer>> ans = new ArrayList<>();
+        // 暂存某个答案
+        ArrayList<Integer> temp = new ArrayList<>();
+        // 暂存是否加过这个值
+        ArrayList<Integer> used = new ArrayList<>();
+        backTrace2(nums, ans, temp, 0, used);
+        return ans;
+    }
+    public static void backTrace2(int[] nums, ArrayList<List<Integer>> ans, ArrayList<Integer> temp, int level, ArrayList<Integer> used){
+        // 到达最底层，加入答案集
+        if (level == nums.length && !ans.contains(temp))
+            ans.add(new ArrayList<>(temp));
+        else{
+            // for循环保证下一个位置可以放各种值！
+            for (int i = 0; i < nums.length; i++) {
+                // 直接用内置函数，不要用HashSet
+                if (!used.contains(i)) {
+                    temp.add(nums[i]);
+                    used.add(i);
+                    backTrace2(nums, ans, temp, level+1, used);
+                    temp.removeLast();
+                    used.removeLast();
+                }
+            }
+        }
+    }
+
+    // 48. 旋转图像  如果不用辅助数组的话半天没头绪; 看大佬：
+    //用reverse将每一行数据进行倒排，倒排后的矩阵沿y=x对称分布，随后再用swap进行交换即可得到最终答案。
+    public static void rotate(int[][] matrix) {
+        // n*n 的二维矩阵
+        int n = matrix.length;
+
+        // 先reverse将每一行数据进行倒排
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix.length / 2; j++) {
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[i][n - j - 1];
+                matrix[i][n - j - 1] = temp;
+            }
+        }
+        // 沿 y=x 对称分布，直接swap
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < n - i; j++) {
+                // 交换 matrix[i][j] 和 matrix[n-1-j][n-1-i]
+                int temp = matrix[i][j];
+                matrix[i][j] = matrix[n - 1 - j][n - 1 - i];
+                matrix[n - 1 - j][n - 1 - i] = temp;
+            }
+        }
+    }
+
+    // 49. 字母异位词分组  自己暴力写，虽然答案对的但是超时
+    public static List<List<String>> groupAnagrams(String[] strs) {
+
+        // 特殊情况处理
+        ArrayList<List<String>> ans = new ArrayList<>();
+        if (strs.length == 0) return ans;
+        List<String> cur = new ArrayList<>();
+        boolean[] used = new boolean[strs.length];
+        for (int i = 0; i < strs.length; i++) {
+            if (!used[i])
+            {
+                cur.add(strs[i]);
+                used[i] = true;
+                for (int j = i + 1; j < strs.length; j++) {
+                    if (CharacterMatch(strs[i], strs[j])) {
+                        cur.add(strs[j]);
+                        used[j] = true;
+                    }
+                }
+            }
+            if (!cur.isEmpty()) {
+                ans.add(new ArrayList<>(cur));
+                cur.clear();
+            }
+        }
+        return ans;
+    }
+    public static boolean CharacterMatch(String a, String b){
+        if (a.length() != b.length()) return false;
+        HashMap<Character, Integer> map1 = new HashMap<>();
+        HashMap<Character, Integer> map2 = new HashMap<>();
+        for (int i = 0; i < a.length(); i++) {
+            if (!map1.containsKey(a.charAt(i))){
+                map1.put(a.charAt(i), 1);
+            }
+            else {
+                map1.put(a.charAt(i), map1.get(a.charAt(i)) + 1);
+            }
+            if (!map2.containsKey(b.charAt(i))){
+                map2.put(b.charAt(i), 1);
+            }
+            else {
+                map2.put(b.charAt(i), map2.get(b.charAt(i)) + 1);
+            }
+        }
+        return map1.equals(map2);
+    }
+    public static List<List<String>> groupAnagrams2(String[] strs) {
+
+        Map<String, List<String>> map = new HashMap<String, List<String>>();
+        for (String str : strs) {
+            // 字符串转为字符数组
+            char[] array = str.toCharArray();
+            // 排序
+            Arrays.sort(array);
+            String key = new String(array);
+            // getOrDefault 方法，如果map有的话，得到key，否则得到一个空的list
+            List<String> list = map.getOrDefault(key, new ArrayList<String>());
+            list.add(str);
+            map.put(key, list);
+        }
+        return new ArrayList<List<String>>(map.values());
+
+    }
+
+    // 50. Pow(x, n)  -- 高精度幂次运算难点在于会溢出, 思路简单但超时
+    public static double myPow(double x, int n) {
+        if (n == 0) return 1;
+        // 取指数的正负号
+        int sign = -(1 & (n >> 31));
+        System.out.println(sign);
+        double ans = 1;
+        for (int i = 1; i <= Math.abs(n); i++) {
+            ans =  (ans * x);
+        }
+
+        return sign == 0 ? ans: 1 / (ans);
+    }
+
+    // 答案标准解答：快速幂
+    public static double myPow2(double x, int n) {
+        if (n == 0) return 1;
+        double ans = myPowHelper(x, Math.abs(n));
+        return n > 0? ans : 1 / (ans);
+    }
+    public static double myPowHelper(double x, int n){
+        if (n == 0) return 1.0;
+        double half = myPowHelper(x, n / 2);
+        return n % 2 == 0? half * half : half * half * x;
+    }
 }

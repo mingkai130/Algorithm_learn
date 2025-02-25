@@ -303,7 +303,7 @@ public class finished_codes {
 
     }
 
-    // 整个则表达式匹配 -- 看答案要动态规划
+    // 正则表达式匹配 -- 看答案要动态规划
     public static  boolean isMatch(String s, String p) {
 
         // 特殊情况
@@ -696,7 +696,7 @@ public class finished_codes {
         return ans;
     }
 
-    // 电话号码的字母组合 -- 循环重数不定的时候用递归(回溯) 巧妙代替
+    // 电话号码的字母组合 -- 循环重数不定的时候用递归(回溯) 巧妙代替 -- 重要模板
     public static List<String> letterCombinations(String digits) {
         // 特殊处理
         if (digits.isEmpty()) return new ArrayList<>();
