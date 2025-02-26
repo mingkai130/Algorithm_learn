@@ -26,19 +26,17 @@ import 算法.*;
 class Solution {
 
     public static void main(String[] args) {
-//        int[][] ints = new int[][]{{1, 2, 3},{4, 5, 6},{7, 8, 9}};
-//        int[] ints2 = new int[]{1, 2, 3};
+        int[][] ints = new int[][]{{1, 2, 3},{4, 5, 6},{7, 8, 9}};
+        int[] ints2 = new int[]{2,3,1,1,4};
 //        String[] strs = new String[]{"eat", "tea", "tan", "ate", "nat", "bat"};
-    System.out.println(-2);
+
+        System.out.println((ints2));
     }
 
-        // 51. N 皇后--经典要会的，一眼暴力  判断斜线：|x1 - x2| == |y1 - y2|
-        public List<List<String>> solveNQueens(int n) {
+    // 56. 合并区间, 思路易
+    public int[][] merge(int[][] intervals) {
 
-        ArrayList<List<String>> ans = new ArrayList<>();
-        int[][] board = new int[n + 1][n + 1];
 
-        return ans;
-        }
+    }
 
 }

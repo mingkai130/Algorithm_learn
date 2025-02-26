@@ -6,7 +6,7 @@ import java.util.*;
 
 import static 算法.数据结构.tools.*;
 
-public class finished_codes_two {
+public class finished_codes2 {
     // 两两交换链表中的节点 想到递归了，但是不知道怎么写，看答案写出来
     public static ListNode swapPairs(ListNode head) {
 
@@ -778,4 +778,66 @@ public class finished_codes_two {
         double half = myPowHelper(x, n / 2);
         return n % 2 == 0? half * half : half * half * x;
     }
+
+    // 53. 最大子数组和  暴力都不用试，肯定超时; ans 是动态规划
+    public static int maxSubArray(int[] nums) {
+        int answer = nums[0];
+
+        int[] dp = new int[nums.length];
+        dp[0] = nums[0];
+        for (int num = 1;num < nums.length;num++) {
+            dp[num] = Math.max(nums[num], dp[num - 1] + nums[num]);
+            answer = Math.max(dp[num], answer);
+        }
+        return answer;
+    }
+
+    // 54. 螺旋输出矩阵 -- 暴力仔细
+    public static List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> ans = new ArrayList<>();
+        int m = matrix.length, n = matrix[0].length;
+        int left = 0, right = n - 1, top = 0, bottom = m - 1;
+        while (left <= right && top <= bottom) {
+            // 从左到右
+            for (int i = left; i <= right; i++) {
+                ans.add(matrix[top][i]);
+            }
+            top++;
+            // 从上到下
+            for (int i = top; i <= bottom; i++) {
+                ans.add(matrix[i][right]);
+            }
+            right--;
+            // 从右到左
+            if (top <= bottom) {
+                for (int i = right; i >= left; i--) {
+                    ans.add(matrix[bottom][i]);
+                }
+            }
+            bottom--;
+            // 从下到上
+            if (left <= right) {
+                for (int i = bottom; i >= top; i--) {
+                    ans.add(matrix[i][left]);
+                }
+            }
+            left++;
+        }
+        return ans;
+    }
+
+    // 55. 跳跃游戏 -- 贪心，不断向右扩张
+    public static boolean canJump(int[] nums) {
+
+        int maxRight = 0;
+        for (int i = 0; i < nums.length; i++) {
+            if (i <= maxRight){
+                maxRight = Math.max(maxRight, i + nums[i]);
+            }
+            else return false;
+            if (maxRight >= nums.length - 1) return true;
+        }
+        return false;
+    }
+
 }
