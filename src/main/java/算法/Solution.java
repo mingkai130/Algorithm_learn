@@ -15,6 +15,7 @@ import java.lang.reflect.AnnotatedArrayType;
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.text.StringCharacterIterator;
+import java.time.Instant;
 import java.time.chrono.IsoChronology;
 import java.util.*;
 import java.util.List;
@@ -26,17 +27,27 @@ import 算法.*;
 class Solution {
 
     public static void main(String[] args) {
-        int[][] ints = new int[][]{{1, 2, 3},{4, 5, 6},{7, 8, 9}};
-        int[] ints2 = new int[]{2,3,1,1,4};
+        int[][] ints = new int[][]{{1, 3},{6, 9}};
+        int[] ints2 = new int[]{2,5};
 //        String[] strs = new String[]{"eat", "tea", "tan", "ate", "nat", "bat"};
 
-        System.out.println((ints2));
+        System.out.println(Arrays.deepToString(insert(ints, ints2)));
     }
 
-    // 56. 合并区间, 思路易
-    public int[][] merge(int[][] intervals) {
+    // 57.插入区间
+    public static int[][] insert(int[][] intervals, int[] newInterval) {
+
+        List<int[]> ans = new ArrayList<>();
 
 
+
+
+        return ans.toArray(new int[ans.size()][]);
+    }
+    // -1：不覆盖    1：左覆盖  0：全覆盖  2：右覆盖
+    public static int isIntervaled(int[][] contents, int[][] one, int index){
+
+        if (contents[index][1] <= one[0])
     }
 
 }

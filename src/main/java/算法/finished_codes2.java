@@ -840,4 +840,39 @@ public class finished_codes2 {
         return false;
     }
 
+    // 56. 合并区间, 思路易，但答案的格式需要注意！先排序很重要的
+    public static int[][] merge(int[][] intervals) {
+
+        // 特殊情况
+        if (intervals.length == 0 || intervals.length == 1)
+            return intervals;
+
+        List<int[]> ans = new ArrayList<>();
+        // 比较器，对区间按照第一个元素排序
+        Arrays.sort(intervals, new Comparator<int[]>() {
+            @Override
+            public int compare(int[] o1, int[] o2) {
+                return o1[0] - o2[0];
+            }
+        });
+
+        for (int i = 0; i < intervals.length; i++) {
+            // [L][R]
+            int L = intervals[i][0], R = intervals[i][1];
+
+            // 给答案中直接添加没有的区间
+            if (ans.isEmpty() || ans.get(ans.size() - 1)[1] < L){
+                ans.add(new int[] {L, R});
+            }
+            // 区间合并
+            else {
+                ans.get(ans.size() - 1) [1] = Math.max(ans.get(ans.size() - 1) [1], R);
+            }
+
+        }
+
+
+        return ans.toArray(new int[ans.size()][]);
+    }
+
 }
