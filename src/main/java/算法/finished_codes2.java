@@ -875,4 +875,184 @@ public class finished_codes2 {
         return ans.toArray(new int[ans.size()][]);
     }
 
+    // 57.插入区间  分三种情况模拟，注意有交集的时候要仔细保存左右边界
+    public static int[][] insert(int[][] intervals, int[] newInterval) {
+
+        List<int[]> ans = new ArrayList<>();
+        boolean placed = false;
+
+        // 暂存重叠部分的边界
+        int left = newInterval[0];
+        int right = newInterval[1];
+        for (int i = 0; i < intervals.length; i++) {
+            // 无交集，直接将intervals[i] 加入ans
+            if (intervals[i][1] < newInterval[0])
+                ans.add(intervals[i]);
+                // 无交集，如果之前没有加过 newInterval， 加入
+            else if (intervals[i][0] > newInterval[1]) {
+                if (!placed) {
+                    ans.add(new int[] {left, right});
+                    placed = true;
+                }
+                ans.add(intervals[i]);
+            }
+            // 有交集
+            else {
+                // 计算并集
+                left = Math.min(left, intervals[i][0]);
+                right = Math.max(right, intervals[i][1]);
+            }
+        }
+        // 最终如果 newInterval 最大，加入
+        if (!placed) {
+            ans.add(new int[]{left, right});
+        }
+        return ans.toArray(new int[ans.size()][]);
+    }
+
+    // 58. 最后一个单词的长度 -- 易，一次通过
+    public static int lengthOfLastWord(String s) {
+
+        int ans = 0;
+        boolean meetWord = false;
+        for (int i = s.length() - 1 ; i >= 0 ; i--) {
+            if (s.charAt(i) == ' ' && meetWord){
+                break;
+            }
+            else if (s.charAt(i)!=' ') {ans ++; meetWord = true;}
+        }
+
+        return ans;
+    }
+
+    // 59. 螺旋矩阵 II  暴力模拟 一次通过，要注意每次转完 1/4 周，都要给对应的边界++/--
+    public static int[][] generateMatrix(int n) {
+        int[][] ans = new int[n][n];
+        // 设置四个边界
+        int top = 0, bottom = n - 1, left = 0, right = n - 1;
+
+        int count = 1;
+
+        while (left <= right && top <= bottom){
+            // 左 -> 右
+            for (int i = left; i <= right; i++) {
+                ans[top][i] = count; count++;
+            }
+            top++;
+            // 上 -> 下
+            for (int i = top; i <= bottom; i++) {
+                ans[i][right] = count; count++;
+            }
+            right--;
+            // 右 -> 左
+            if (bottom >= top)
+                for (int i = right; i >= left; i--) {
+                    ans[bottom][i] = count; count++;
+                }
+            bottom--;
+            // 下 -> 上
+            if (left <= right)
+                for (int i = bottom; i >= top; i--) {
+                    ans[i][left] = count; count++;
+                }
+            left++;
+        }
+        return ans;
+    }
+
+    // 61. 旋转链表 -- 自己暴力通过，不难；但是答案更巧妙，找到该链表的末尾节点，将
+    //     其与头节点相连。这样就得到了闭合为环的链表。然后我们找到新链表的最后一个节点，将当前闭合为环的链表断开
+    public static ListNode rotateRight(ListNode head, int k) {
+        ListNode left = head, right = head;
+        // 特殊情况处理
+        if (head == null || head.next == null) return head;
+
+            // 旋转链表
+        else
+        {       int count = 0; ListNode temp = head;
+
+            while (temp!=null) {
+                count++;    temp = temp.next;
+            }
+            count = k % count;
+            while (count > 0){
+                // 右指针找倒数第二个节点
+                while (right.next.next != null) right = right.next;
+
+                right.next.next = left;
+                left = right.next;
+                right.next = null;
+                right = left;
+                count--;
+            }
+        }
+        return left;
+    }
+
+    // 62. 不同路径  一眼动态规划 ,f(i,j)=f(i−1,j)+f(i,j−1) 秒了
+    public static int uniquePaths(int m, int n) {
+
+        int[][] dp = new int[m + 1][n + 1];
+        // dp 数组初始化
+        for (int i = 0; i <= n; i++) {
+            dp[1][i] = 1;
+        }
+        for (int i = 0; i <= m; i++) {
+            dp[i][1] = 1;
+        }
+        for (int i = 2; i <= m; i++) {
+            for (int j = 2; j <= n; j++) {
+                dp[i][j] = dp[i - 1][j] + dp[i] [j - 1];
+            }
+        }
+        return dp[m][n];
+    }
+
+    // 63. 不同路径 II  同样动态规划，有障碍物  思路很简单，dp数组更新的时候要注意
+    public static int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        int n = obstacleGrid.length;
+        int m = obstacleGrid[0].length;
+        int[][] dp = new int[n][m];
+
+        for(int i = 0 ;i < m;i ++){
+            if(obstacleGrid[0][i] == 1)break;
+            dp[0][i] = 1;
+        }
+        for(int i = 0 ;i < n;i ++){
+            if(obstacleGrid[i][0] == 1) break;
+            dp[i][0] = 1;
+        }
+
+
+        for(int i = 1 ; i < n;i ++){
+            for(int j = 1  ;j < m;j ++){
+                if(obstacleGrid[i][j] == 0){
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1];
+                }
+            }
+        }
+
+        return dp[n-1][m-1];
+    }
+
+    // 64. 最小路径和   也是一眼动态规划 秒了
+    public static int minPathSum(int[][] grid) {
+        int m = grid.length + 1, n = grid[0].length + 1;
+
+        int[][] dp = new int[m][n];
+        dp[0][0] = grid[0][0];
+        // dp 数组初始化
+        for (int i = 1; i < grid.length; i++) {
+            dp[i][0] = grid[i][0] + dp[i - 1][0];
+        }
+        for (int i = 1; i < grid[0].length; i++) {
+            dp[0][i] = grid[0][i] + dp[0][i - 1];
+        }
+        for (int i = 1; i < grid.length; i++) {
+            for (int j = 1; j < grid[0].length; j++) {
+                dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - 1]) + grid[i][j];
+            }
+        }
+        return dp[m - 2][n - 2];
+    }
 }

@@ -1,5 +1,6 @@
 package 算法;
 
+import javax.imageio.event.IIOReadProgressListener;
 import javax.sound.sampled.ReverbType;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicTreeUI;
@@ -20,34 +21,31 @@ import java.time.chrono.IsoChronology;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.logging.Level;
 
+import 算法.数据结构.*;
 import 算法.*;
 
 
 class Solution {
 
     public static void main(String[] args) {
-        int[][] ints = new int[][]{{1, 3},{6, 9}};
-        int[] ints2 = new int[]{2,5};
+        int[][] ints = new int[][]{{1,3,1},{1,5,1},{4,2,1}};
+        int[] ints2 = new int[]{8,9,9,9};
 //        String[] strs = new String[]{"eat", "tea", "tan", "ate", "nat", "bat"};
 
-        System.out.println(Arrays.deepToString(insert(ints, ints2)));
+//        ListNode head = new ListNode(1);
+//        head.add(2);head.add(3);head.add(4);head.add(5);
+
+        System.out.println();
     }
 
-    // 57.插入区间
-    public static int[][] insert(int[][] intervals, int[] newInterval) {
-
-        List<int[]> ans = new ArrayList<>();
-
+    // 71. 简化路径 -- 简化 Linux 目录路径
+    public static String simplifyPath(String path) {
+        Stack ans = new Stack();
 
 
 
-        return ans.toArray(new int[ans.size()][]);
+        return " ";
     }
-    // -1：不覆盖    1：左覆盖  0：全覆盖  2：右覆盖
-    public static int isIntervaled(int[][] contents, int[][] one, int index){
-
-        if (contents[index][1] <= one[0])
-    }
-
 }
