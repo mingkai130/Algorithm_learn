@@ -40,12 +40,9 @@ class Solution {
         System.out.println();
     }
 
-    // 71. 简化路径 -- 简化 Linux 目录路径
-    public static String simplifyPath(String path) {
-        Stack ans = new Stack();
+    // 72. 编辑距离
+    public int minDistance(String word1, String word2) {
 
-
-
-        return " ";
+        return 0;
     }
 }

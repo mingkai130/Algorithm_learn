@@ -1,5 +1,10 @@
 package 算法;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Objects;
+import java.util.Stack;
+
 public class finished_codes3 {
 
     // 66. 加一 , 需要考虑进位情况 秒了
@@ -103,5 +108,65 @@ public class finished_codes3 {
             dp[i] = dp[i - 1] + dp[i - 2];
         }
         return dp[n];
+    }
+
+    // 71. 简化路径 -- Linux 目录路径，暴力模拟失败
+    public static String simplifyPath(String path) {
+        Stack<String> ans = new Stack<>();
+        // 暂存每个路径
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < path.length(); i++) {
+            // 情况1
+            char current = path.charAt(i);
+            if (current == '/') {
+                if(!sb.isEmpty() && !sb.toString().equals("..")) {
+                    ans.push(sb.toString());
+                    sb.delete(0, sb.length() );
+                } else if (sb.toString().equals("..")) {
+                    if (!ans.isEmpty()){
+                        ans.pop();ans.pop();
+                        sb.delete(0, sb.length());
+                    }
+                }
+                if ( !ans.isEmpty()&& Objects.equals(ans.peek(), "/")) ans.pop();
+                ans.push(String.valueOf(current));
+            }
+            // 情况2,字母
+            else if (current >= 'A' && current <= 'z'){
+                sb.append(current);
+            }
+            // 情况3, '.'-关键
+            else {
+                sb.append(current);
+            }
+
+            // 末尾处理
+            if (i == path.length() - 1 && !sb.isEmpty()) ans.push(sb.toString());
+        }
+
+
+        return ans.toString();
+    }
+    // 看答案，先根据 '/' 分割字符串,后面微调
+    public static String simplifyPath2(String path){
+        Deque<String> stack = new ArrayDeque<String>();
+        String[] words=path.split("/");
+        for (String word : words) {
+            if(word.isEmpty()||word.equals(".")){
+                continue;
+            }
+            if (word.equals("..")) {
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                }
+                continue;
+            }
+            stack.push(word);
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!stack.isEmpty()) {
+            sb.append("/").append(stack.pollLast());
+        }
+        return sb.isEmpty() ? "/" : sb.toString();
     }
 }
