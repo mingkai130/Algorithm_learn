@@ -167,6 +167,7 @@ public class finished_codes3 {
         return sb.isEmpty() ? "/" : sb.toString();
     }
 
+<<<<<<< HEAD
     // 72. 编辑距离 不会，答案用动态规划  注意初始化！
     public static int minDistance(String word1, String word2) {
         int[][] dp = new int[word1.length() + 1][word2.length() + 1];
@@ -326,5 +327,10 @@ public class finished_codes3 {
             dfs(ans, temp, nums, index + 1);
         }
     }
+=======
+
+
+
+>>>>>>> 0ff9bdc8a8039471e2714cb7936fecbd0b92ad4e
 
 }
