@@ -1,6 +1,9 @@
 package 算法;
 
+import 算法.数据结构.ListNode;
+
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class finished_codes3 {
 
@@ -167,7 +170,7 @@ public class finished_codes3 {
         return sb.isEmpty() ? "/" : sb.toString();
     }
 
-<<<<<<< HEAD
+
     // 72. 编辑距离 不会，答案用动态规划  注意初始化！
     public static int minDistance(String word1, String word2) {
         int[][] dp = new int[word1.length() + 1][word2.length() + 1];
@@ -327,10 +330,181 @@ public class finished_codes3 {
             dfs(ans, temp, nums, index + 1);
         }
     }
-=======
 
 
+    // 79. 单词搜索, 想到深度优先搜索 dfs；自己写的太繁琐，虽然过了但是不牛逼；学习答案
+    public static boolean exist(char[][] board, String word) {
 
->>>>>>> 0ff9bdc8a8039471e2714cb7936fecbd0b92ad4e
 
+        AtomicBoolean ans = new AtomicBoolean(false);
+        int hang = board.length;
+        int lie = board[0].length;
+        boolean[][] visited = new boolean[hang][lie];
+
+
+        // 找开头
+        for (int i = 0; i < hang; i++) {
+            for (int j = 0; j < lie; j++) {
+                if (board[i][j] == word.charAt(0)) {
+                    dfs_exist(board, word, ans, "", i, j, visited);
+                    if (ans.get()) return true;
+                }
+            }
+        }
+        return ans.get();
+    }
+    // dfs 暴力往后查
+    public static void dfs_exist(char[][] board, String word, AtomicBoolean ans, String current, int hang, int lie, boolean[][] visited) {
+        if (ans.get()) return; // 如果已经找到，直接返回
+
+        current += board[hang][lie];
+        visited[hang][lie] = true;
+
+        // 递归出口返回
+        if (current.equals(word)) {
+            ans.set(true);
+            return;
+        }
+
+        if (current.length() < word.length()) {
+            // 上
+            if (hang > 0 && !visited[hang - 1][lie]) dfs_exist(board, word, ans, current, hang - 1, lie, visited);
+
+            // 下
+            if (hang < board.length - 1 && !visited[hang + 1][lie]) dfs_exist(board, word, ans, current, hang + 1, lie, visited);
+
+            // 左
+            if (lie > 0 && !visited[hang][lie - 1]) dfs_exist(board, word, ans, current, hang, lie - 1, visited);
+
+            // 右
+            if (lie < board[0].length - 1 && !visited[hang][lie + 1]) dfs_exist(board, word, ans, current, hang, lie + 1, visited);
+        }
+
+        visited[hang][lie] = false; // 回溯! 这里很重要，要把 visited 回复初始值
+
+        // 答案的回溯方法是这样： 直接在当前位置设置一个特定值，表示为 visited，太巧妙了；答案判断false那里也更简洁
+//        char temp = board[i][j];
+//        board[i][j] = '\0'; // 标记当前位置已访问
+//
+//        boolean res = dfs(board, word, i + 1, j, index + 1) ||
+//                dfs(board, word, i - 1, j, index + 1) ||
+//                dfs(board, word, i, j + 1, index + 1) ||
+//                dfs(board, word, i, j - 1, index + 1);
+//
+//        board[i][j] = temp; // 回溯，恢复当前位置
+
+    }
+
+    // 80. 删除有序数组中的重复项 II   第一反应单指针解决，但是出现了问题；答案使用双指针,好巧妙啊, slow+fast指针
+    public static int removeDuplicates(int[] nums) {
+        if (nums.length <= 2) return nums.length;
+        int slow = 2, fast = 2;
+        while (fast < nums.length) {
+            if (nums[slow - 2] != nums[fast]){
+                nums[slow] = nums[fast];
+                slow ++;
+            }
+            fast ++;
+        }
+        return slow;
+    }
+
+    // 81. 搜索旋转排序数组 II  -- 无聊题目，感觉没什么意义 答案一顿操作结果还是 O(n)
+    public static boolean search(int[] nums, int target) {
+
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] == target) return true;
+        }
+
+        return false;
+    }
+
+    // 82. 删除排序链表中的重复元素 II  链表删除操作   自己用了三个指针，答案只用两个指针就很好地解决了~
+    public static ListNode deleteDuplicates(ListNode head) {
+        ListNode header = new ListNode();
+        header.next = head;
+        head = header;
+        ListNode slow = head.next, fast = head.next;
+        ListNode temp = head;
+        while (fast!=null && fast.next != null){
+            // 正常数据，快慢指针往后走
+            while (fast.next.val != slow.val){
+                fast = fast.next; slow = slow.next;
+                temp = temp.next;
+                if (fast.next == null) break;
+            }
+            // 重复数据，快指针走
+            if (fast.next == null) break;
+            while (fast.next.val == slow.val)
+            {fast = fast.next;
+                if (fast.next == null) break;
+            }
+
+            // 删除重复数据
+            temp.next = fast.next;
+            fast = fast.next;
+            slow = fast;
+        }
+        return header.next;
+    }
+
+    // 83. 删除排序链表中的重复元素, 自己双指针， 答案单指针
+    public static ListNode deleteDuplicates2(ListNode head) {
+        // 搞个头节点，将链头的流程简化
+        if (head == null || head.next == null) return head;
+        ListNode header = new ListNode();
+        header.next = head;
+
+        ListNode slow = head, fast = head.next;
+        while (fast != null){
+            // 值不同，两指针往后走
+            if (slow.val != fast.val) {
+                slow = slow.next;
+                fast = fast.next;
+            }
+            else {
+                // 值相同，fast->
+                while (fast != null && slow.val == fast.val) fast = fast.next;
+                slow.next = fast;
+                slow = fast;
+            }
+        }
+        return header.next.next;
+
+
+//         答案直接这样处理，一个循环结束；哎自己怎么这么菜
+//        while(p.next!=null){
+//            if(p.next.val==p.val){
+//                p.next=p.next.next;
+//            }else{
+//                p=p.next;
+//            }
+//        }
+    }
+
+    // 84. 柱状图中最大的矩形 困难题可以暴力解，但是答案用单调栈更厉害  完全不会，看答案过的
+    //  这题考的基础模型其实就是：在一维数组中对每一个数找到第一个比自己小的元素。
+    //  这类“在一维数组中找第一个满足某种条件的数”的场景就是典型的单调栈应用场景。
+    //  核心：面积 = (右边第一个比当前柱子小的index - 左边第一个比当前柱子小的index) * 当前柱子高度
+    public static int largestRectangleArea(int[] heights) {
+        int ans = -1;
+        Stack<Integer> st = new Stack<>();
+        // 在高度数组末尾添加一个高度为0的柱子，用于处理所有柱子
+        int[] newHeights = new int[heights.length + 1];
+        System.arraycopy(heights, 0, newHeights, 0, heights.length);
+        newHeights[heights.length] = 0;
+
+        for (int r = 0; r < newHeights.length; r++) {
+            while (!st.isEmpty() && newHeights[r] <= newHeights[st.peek()]){
+                // 栈顶保存的是当前柱子，弹出
+                int index = st.pop();
+                // 再弹，就是左边第一个比当前柱子小的元素！
+                int l = st.isEmpty()? -1 : st.peek();
+                ans = Math.max(ans, (r - l - 1) * newHeights[index]);
+            }
+            st.push(r);
+        }
+
+        return ans;
+    }
 }
